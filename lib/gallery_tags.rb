@@ -41,7 +41,10 @@ module GalleryTags
     options[:limit] = tag.attr['limit'] ? tag.attr['limit'].to_i : 9999
     options[:offset] = tag.attr['offset'] ? tag.attr['offset'].to_i  : 0
     order = (%w[ASC DESC].include?(tag.attr['order'].to_s.upcase)) ? tag.attr['order'] : "ASC"
-    options[:order] = "#{by} #{order}"
+    options[:order] = "#{by} #{order}"  
+    if tag.attr['keywords']
+      options[:condtions].merge({:keywords => tag.attr['keywords'].split(',')})
+    end
     galleries = Gallery.find(:all, options)
     galleries.each do |gallery|
       tag.locals.gallery = gallery
@@ -52,7 +55,7 @@ module GalleryTags
   
   desc %{    
     Usage:
-    <pre><code><r:gallery [id='id'] [name='name']>...</r:gallery></code></pre>
+    <pre><code><r:gallery [id='id'] [name='name'] [keywords='key1, key2, key3']>...</r:gallery></code></pre>
     Selects current gallery }
   tag "gallery" do |tag|
     tag.locals.gallery = find_gallery(tag)
@@ -214,7 +217,7 @@ protected
     if tag.locals.gallery
       tag.locals.gallery
     elsif tag.attr["id"]
-      Gallery.find_by_id tag.attr["id"]
+      Gallery.find_by_id tag.attr["id"] 
     elsif @current_gallery
       @current_gallery
     elsif tag.locals.page.base_gallery

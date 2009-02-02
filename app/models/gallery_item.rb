@@ -14,7 +14,8 @@ class GalleryItem < ActiveRecord::Base
   
   has_attachment :storage => :file_system,
     :path_prefix => Radiant::Config["gallery.path_prefix"],
-    :processor => Radiant::Config["gallery.processor"]      
+    :processor => Radiant::Config["gallery.processor"],
+    :max_size => 3.megabytes     
   
   belongs_to :gallery
   
@@ -24,6 +25,9 @@ class GalleryItem < ActiveRecord::Base
   belongs_to :parent, :class_name => 'GalleryItem', :foreign_key => 'parent_id'
   
   has_many :infos, :class_name => "GalleryItemInfo", :dependent => :delete_all
+  
+  has_and_belongs_to_many :keywords, :join_table => "gallery_items_keywords", :foreign_key => "keyword_id", :uniq => true,
+                            :class_name => "GalleryKeyword", :association_foreign_key => "gallery_item_id"
 
   before_create :set_filename_as_name
   before_create :set_position
@@ -35,17 +39,16 @@ class GalleryItem < ActiveRecord::Base
     item.generate_default_thumbnails if item.parent.nil?
   end       
   
-  before_thumbnail_saved do |thumbnail|
-    item = thumbnail.parent
+  before_thumbnail_saved do |item, thumbnail|
     thumbnail.gallery_id = item.gallery_id
   end                                                
   
   def thumb(options = {})
     if self.thumbnailable?
-      prefix    = options[:prefix] ? "#{options[:prefix]}_" : ''    
-      if options[:special].compact.length > 0
-        pre = options[:special][0] == null ? '' : options[:special][0] 
-        post = options[:special][1] == null ? '' : options[:special][1] 
+      prefix    = options[:prefix] ? "#{options[:prefix]}_" : '' 
+      if options[:special] != nil && options[:special].compact.length > 0                       
+        pre = options[:special][0] || ''
+        post = options[:special][1] || ''
         size    = "#{pre}#{options[:width]}x#{options[:height]}#{post}"
         suffix    = "#{prefix}#{size}"      
       elsif options[:geometry] != nil
