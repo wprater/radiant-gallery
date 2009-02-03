@@ -10,12 +10,12 @@ class GalleryItem < ActiveRecord::Base
         @@extensions[extension.downcase] || 'Unknown'
       end
     end
-  end      
+  end
   
   has_attachment :storage => :file_system,
     :path_prefix => Radiant::Config["gallery.path_prefix"],
     :processor => Radiant::Config["gallery.processor"],
-    :max_size => 3.megabytes     
+    :max_size => Radiant::Config["gallery.max_size"].to_i.kilobytes     
   
   belongs_to :gallery
   
@@ -74,8 +74,8 @@ class GalleryItem < ActiveRecord::Base
     self.gallery_keywords.each do |key|
       str += key.keyword
       str += ','
-    end       
-    return str
+    end   
+    str.slice(0..-2) 
   end           
   
   def keywords=(keywords)
