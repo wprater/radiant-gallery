@@ -10,7 +10,7 @@ Gallery.EditForm = {
         if (name == '&nbsp;') name = '';
         $('edit-item-name').value = name;
         $('edit-item-description').value = item.down('.description').innerHTML;
-        $('edit-item-keywords').value = item.down('.description').innerHTML;
+        $('edit-item-keywords').value = item.down('.keywords').innerHTML;
     },
 
     initializeHandler: function() {
