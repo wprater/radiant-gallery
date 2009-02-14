@@ -93,7 +93,16 @@ module GalleryItemTags
   tag "gallery:item:name" do |tag|      
     item = find_item(tag)
     item.name
-  end  
+  end 
+  
+  desc %{
+    Usage:
+    <pre><code><r:gallery:item:keywords /></code></pre>
+    Provides keywords for current gallery item }
+  tag "gallery:item:keywords" do |tag|      
+    item = find_item(tag)
+    item.keywords.split(',').join(" ")
+  end 
   
   desc %{
     Usage:
