@@ -225,9 +225,11 @@ module GalleryTags
 
 protected
   
-  def find_gallery(tag)
+  def find_gallery(tag)  
     if tag.locals.gallery
-      tag.locals.gallery
+      tag.locals.gallery 
+    elsif tag.attr["name"]
+      Gallery.find_by_name tag.attr["name"]
     elsif tag.attr["id"]
       Gallery.find_by_id tag.attr["id"] 
     elsif @current_gallery
