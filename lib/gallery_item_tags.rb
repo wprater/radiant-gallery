@@ -11,10 +11,7 @@ module GalleryItemTags
   
   desc %{    
     Usage:
-    <pre><code><r:gallery:items:each [order='order' by='by' limit='limit' offset='offset'
-scope='all|gallery']>
-...
-</r:gallery:items:each></code></pre>
+    <pre><code><r:gallery:items:each [order='order' by='by' limit='limit' offset='offset' scope='all|gallery']></r:gallery:items:each></code></pre>
     Iterates over all items in current gallery.
     Valid scopes are 'all' (find all Gallery Items) and 'gallery' (find Items that belong to the current Gallery) }
   tag "gallery:items:each" do |tag|
