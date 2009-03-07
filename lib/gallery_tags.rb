@@ -10,7 +10,7 @@ module GalleryTags
   
   desc %{    
     Usage:
-    <pre><code><r:galleries:each>...</r:galleries:each></code></pre>
+    <pre><code><r:galleries:each [order='order' by='by' limit='limit' offset='offset' level='top|current|bottom|all' keywwords='key1,key2,key3']>...</r:galleries:each></code></pre>
     Iterates through all galleries }
   tag "galleries:each" do |tag|
     content = ''
@@ -87,13 +87,19 @@ module GalleryTags
     gallery.name
   end
   
-  desc %{
+  desc %{                 
     Usage:
-    <pre><code><r:gallery:keywords /></code></pre>
-    Provides keywords for current and children galleries }
+    <pre><code><r:gallery:keywords [separator=',']/></code></pre>
+    Provides keywords for current and children galleries, use
+    separator="separator_string" to specify the character between keywords }
   tag "gallery:keywords" do |tag|
-    gallery = tag.locals.gallery
-    gallery.keywords.split(',').join(" ");
+    gallery = tag.locals.gallery    
+    if tag.attr['join']
+      joiner = tag.attr['join'] 
+    else
+      joiner=' '
+    end
+    gallery.keywords.split(',').join(joiner);
     tag.expand
   end                            
 
