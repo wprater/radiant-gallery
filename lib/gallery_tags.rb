@@ -80,10 +80,13 @@ module GalleryTags
   
   desc %{    
     Usage:
-    <pre><code><r:gallery:name /></code></pre>
-    Provides name for current gallery }
+    <pre><code><r:gallery:name [safe='true']/></code></pre>
+    Provides name for current gallery, safe is to make safe for web }
   tag "gallery:name" do |tag|
-    gallery = tag.locals.gallery    
+    gallery = tag.locals.gallery
+    if tag.attr['safe']
+      gallery.name = gallery.name.gsub(/[\s]+/, '_')
+    end 
     gallery.name
   end
   

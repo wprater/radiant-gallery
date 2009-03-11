@@ -89,10 +89,13 @@ module GalleryItemTags
 
   desc %{
     Usage:
-    <pre><code><r:gallery:item:name /></code></pre>
-    Provides name for current gallery item }
+    <pre><code><r:gallery:item:name [safe='true']/></code></pre>
+    Provides name for current gallery item, safe is to make safe for web }
   tag "gallery:item:name" do |tag|      
-    item = find_item(tag)
+    item = find_item(tag)     
+    if tag.attr['safe']
+      item.name = item.name.gsub(/[\s]+/, '_')
+    end
     item.name
   end 
   
