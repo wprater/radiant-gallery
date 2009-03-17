@@ -25,7 +25,8 @@ module GalleryPageExtensions
   desc %{    
     Usage:
     <pre><code><r:gallery:link /></code></pre>
-    Provides link for current gallery }
+    Provides link for current gallery options are rendered 
+    inline as key:value pairs i.e. class='value' id='value', etc.}
   tag "gallery:link" do |tag|
     gallery = find_gallery(tag)
     options = tag.attr.dup
@@ -50,28 +51,43 @@ module GalleryPageExtensions
     @current_gallery
   end
   
+  def current_keyword
+    @current_keyword
+  end
+  
   def find_by_url(url, live = true, clean = false)
     url = clean_url(url)
     if url =~ /^#{self.url}(.*)/
       path, item, action = $1, nil, nil
       if path =~ /^(.*)\/(\d+\.\w+)\/(show|download)\/?$/
-        path, item, action = $1, $2, $3
-      end            
-      @current_gallery = find_gallery_by_path(path)      
-      if @current_gallery
-        if !item.nil? && !action.nil?
-          item_id, item_extension = item.split(".")
-          if @current_item = @current_gallery.items.find_by_id_and_extension(item_id, item_extension)
-            self
-          else
-            super
-          end
+        path, item, action = $1, $2, $3           
+      elsif path =~ /^(.*)\/(keywords)?([\w\&]+)\/?/
+        path, action, item = $1, $2, $3  
+      end       
+      if !item.nil? && !action.nil? && action == 'keywords'
+        item = item.split('&')
+        if @current_keywords = item
+          self 
+        else
+          super
+        end 
+      else
+        super
+      end                
+      if @current_gallery = find_gallery_by_path(path)
+        if !item.nil? && !action.nil? && action != 'keywords'
+            item_id, item_extension = item.split(".")
+            if @current_item = @current_gallery.items.find_by_id_and_extension(item_id, item_extension)
+              self
+            else
+              super
+            end 
         else
           self  
         end        
       else
         super
-      end
+      end  
     else
       super
     end      

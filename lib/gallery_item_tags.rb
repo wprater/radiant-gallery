@@ -111,7 +111,7 @@ module GalleryItemTags
     else
       joiner=' '
     end
-    item.keywords.split(',').join(joiner)
+    item.keywords.gsub!(/\,/, joiner);
   end 
   
   desc %{
