@@ -107,7 +107,7 @@ module GalleryItemTags
   tag "gallery:item:keywords" do |tag|      
     item = find_item(tag)    
     joiner = tag.attr['separator'] ? tag.attr['separator'] : ' '
-    item.keywords.gsub!(/\,/, joiner);
+    item.keywords.gsub(/\,/, joiner);
   end 
   
   desc %{
