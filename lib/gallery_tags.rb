@@ -10,8 +10,9 @@ module GalleryTags
   
   desc %{    
     Usage:
-    <pre><code><r:galleries:each [order='order' by='by' limit='limit' offset='offset' level='top|current|bottom|all' keywwords='key1,key2,key3']>...</r:galleries:each></code></pre>
-    Iterates through all galleries }
+    <pre><code><r:galleries:each [order='order' by='by' limit='limit' offset='offset' level='top|current|bottom|all' 
+      keywords='key1,key2,key3' current_keywords='is|is_not']>...</r:galleries:each></code></pre>
+      Iterates through all galleries keywords=(manual entered keywords || current_keywords || is not current keywords)}
   tag "galleries:each" do |tag|
     content = ''
     options = {}
@@ -32,27 +33,38 @@ module GalleryTags
       options[:conditions][:parent_id] = nil
     when 'bottom'
       options[:conditions][:children_count] = 0
-    end
-                                        
-    if tag.attr['keywords']
-      keywords = tag.attr['keywords'].split(',');     
-      options[:joins] = :gallery_keywords  
-      options[:conditions].merge!({"gallery_keywords.keyword" => keywords })
-    end
-    
+    end  
+
     by = tag.attr['by'] ? tag.attr['by'] : "position"
     unless Gallery.columns.find{|c| c.name == by }
       raise GalleryTagError.new("`by' attribute of `each' tag must be set to a valid field name")
+    end  
+    
+    if !tag.attr['keywords'].nil? || !tag.attr['current_keywords'].nil?                                                                                                                                  
+      keywords = !tag.attr['keywords'].nil? ? tag.attr['keywords'].split(',') : []
+      if (tag.attr['current_keywords'] == 'is' || tag.attr['current_keywords'] == 'is_not') && !tag.globals.page.request.parameters['keywords'].nil?
+        @current_keywords = tag.globals.page.request.parameters['keywords'].split(',') if !tag.globals.page.request.parameters['keywords'].nil?
+        if !@current_keywords.nil? && @current_keywords.length > 0
+          keywords.concat(@current_keywords)
+        end
+      end
+      options[:joins] = :gallery_keywords
+      options[:conditions].merge!({"gallery_keywords.keyword" => keywords}) if keywords.length > 0              
     end
+    
     options[:limit] = tag.attr['limit'] ? tag.attr['limit'].to_i : 9999
     options[:offset] = tag.attr['offset'] ? tag.attr['offset'].to_i  : 0
     order = (%w[ASC DESC].include?(tag.attr['order'].to_s.upcase)) ? tag.attr['order'] : "ASC"
     options[:order] = "#{by} #{order}"  
-    galleries = Gallery.find(:all, options)
+    galleries = Gallery.find(:all, options).uniq unless @current_keywords.nil? && tag.attr['current_keywords'] == 'is'
+    if !@current_keywords.nil? && tag.attr['current_keywords'] == 'is_not' && galleries.length > 0                                                   
+      options.merge!(:conditions => ['galleries.id NOT IN (?) AND hidden =? AND external =?', galleries, false, false])   
+      galleries = Gallery.find(:all, options).uniq
+    end
     galleries.each do |gallery|
       tag.locals.gallery = gallery
       content << tag.expand
-    end
+    end unless @current_keywords.nil? && tag.attr['current_keywords'] == 'is' 
     content
   end
   
@@ -166,8 +178,9 @@ module GalleryTags
   
   desc %{    
     Usage:
-    <pre><code><r:gallery:children:each>...</r:gallery:children:each></code></pre>
-    Iterates over all children in current gallery }
+    <pre><code><r:gallery:children:each [order='order' by='by' limit='limit' offset='offset'
+    keywords='key1,key2,key3' current_keywords='is|is_not']>...</r:gallery:children:each></code></pre>
+    Iterates through all galleries keywords=(manual entered keywords || current_keywords || is not current keywords)}
   tag "gallery:children:each" do |tag|
     content = ""
     gallery = find_gallery(tag)
@@ -176,15 +189,33 @@ module GalleryTags
     by = tag.attr['by'] ? tag.attr['by'] : "position"
     unless Gallery.columns.find{|c| c.name == by }
       raise GalleryTagError.new("`by' attribute of `each' tag must be set to a valid field name")
+    end   
+               
+    if !tag.attr['keywords'].nil? || !tag.attr['current_keywords'].nil?                                                                                                                                  
+      keywords = !tag.attr['keywords'].nil? ? tag.attr['keywords'].split(',') : []
+      if (tag.attr['current_keywords'] == 'is' || tag.attr['current_keywords'] == 'is_not') && !tag.globals.page.request.parameters['keywords'].nil?
+        @current_keywords = tag.globals.page.request.parameters['keywords'].split(',') if !tag.globals.page.request.parameters['keywords'].nil?
+        if !@current_keywords.nil? && @current_keywords.length > 0
+          keywords.concat(@current_keywords)
+        end
+      end
+      options[:joins] = :gallery_keywords
+      options[:conditions].merge!({"gallery_keywords.keyword" => keywords}) if keywords.length > 0              
     end
+    
     options[:limit] = tag.attr['limit'] ? tag.attr['limit'].to_i : 9999
     options[:offset] = tag.attr['offset'] ? tag.attr['offset'].to_i  : 0
     order = (%w[ASC DESC].include?(tag.attr['order'].to_s.upcase)) ? tag.attr['order'] : "ASC"
-    options[:order] = "#{by} #{order}"        
-    gallery.children.find(:all, options).each do |sub_gallery| 
+    options[:order] = "#{by} #{order}"   
+    galleries = gallery.children.find(:all, options).uniq unless @current_keywords.nil? && tag.attr['current_keywords'] == 'is'
+    if !@current_keywords.nil? && tag.attr['current_keywords'] == 'is_not' && galleries.length > 0                                                   
+      options.merge!(:conditions => ['galleries.id NOT IN (?) AND hidden =? AND external =?', galleries, false, false])   
+      galleries = gallery.children.find(:all, options).uniq
+    end                                    
+    galleries.each do |sub_gallery| 
       tag.locals.gallery = sub_gallery
       content << tag.expand      
-    end
+    end unless @current_keywords.nil? && tag.attr['current_keywords'] == 'is'
     content
   end
   
@@ -274,7 +305,7 @@ protected
       tag.locals.gallery 
     elsif tag.attr["name"]
       Gallery.find_by_name tag.attr["name"]
-    elsif tag.attr["id"]
+    elsif tag.attr["id"] 
       Gallery.find_by_id tag.attr["id"] 
     elsif @current_gallery
       @current_gallery
