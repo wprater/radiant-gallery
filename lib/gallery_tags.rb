@@ -95,9 +95,12 @@ module GalleryTags
     <pre><code><r:gallery:name [safe='true']/></code></pre>
     Provides name for current gallery, safe is to make safe for web }
   tag "gallery:name" do |tag|
-    gallery = tag.locals.gallery                        
-    @normal ||= gallery.name
-    @safe ||= gallery.name.gsub(/[\s]+/, '_').downcase
+    gallery = tag.locals.gallery
+    if tag.attr['safe'] == 'true'  
+      @safe = gallery.name.gsub(/[\s]+/, '_').downcase
+    else 
+      @normal = gallery.name
+    end
     name = tag.attr['safe'] ? @safe : @normal
   end
   
@@ -109,8 +112,11 @@ module GalleryTags
   tag "gallery:keywords" do |tag|
     gallery = tag.locals.gallery    
     joiner = tag.attr['separator'] ? tag.attr['separator'] : ' ' 
-    @normal ||= gallery.keywords
-    @safe ||= gallery.keywords.gsub(/[\s]+/, '_').downcase
+    if tag.attr['safe'] == 'true'  
+      @safe = gallery.keywords.gsub(/[\s]+/, '_').downcase
+    else 
+      @normal = gallery.keywords
+    end
     keys = tag.attr['safe'] ? @safe : @normal
     keys.gsub(/\,/, joiner);
     tag.expand
@@ -135,9 +141,12 @@ module GalleryTags
     <pre><code><r:gallery:keywords:keyword [safe='true']/></code></pre>
     Get the keyword of the current gallery:keywords loop } 
   tag 'gallery:keywords:keyword' do |tag|
-    gallery_keyword = tag.locals.uniq_keywords                            
-    @normal ||= gallery_keyword.keywords
-    @safe ||= gallery_keyword.keywords.gsub(/[\s]+/, '_').downcase
+    gallery_keyword = tag.locals.uniq_keywords
+    if tag.attr['safe'] == 'true'  
+      @safe = gallery_keyword.keywords.gsub(/[\s]+/, '_').downcase
+    else 
+      @normal = gallery_keyword.keywords
+    end
     keys = tag.attr['safe'] ? @safe : @normal
     keys
   end
