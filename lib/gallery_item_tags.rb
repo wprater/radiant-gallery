@@ -99,11 +99,10 @@ module GalleryItemTags
     <pre><code><r:gallery:item:name [safe='true']/></code></pre>
     Provides name for current gallery item, safe is to make safe for web }
   tag "gallery:item:name" do |tag|      
-    item = find_item(tag)     
-    if tag.attr['safe']
-      item.name = item.name.gsub(/[\s]+/, '_').downcase
-    end
-    item.name
+    item = find_item(tag)                          
+    @normal ||= item.name
+    @safe ||= item.name.gsub(/[\s]+/, '_').downcase
+    name = tag.attr['safe'] ? @safe : @normal
   end 
   
   desc %{
@@ -113,9 +112,10 @@ module GalleryItemTags
     separator="separator_string" to specify the character between keywords}
   tag "gallery:item:keywords" do |tag|      
     item = find_item(tag)    
-    joiner = tag.attr['separator'] ? tag.attr['separator'] : ' '  
-    keys = item.keywords
-    keys = keys.gsub(/[\s]+/, '_').downcase if (tag.attr['safe'])
+    joiner = tag.attr['separator'] ? tag.attr['separator'] : ' '                                            
+    @normal ||= item.keywords
+    @safe ||= item.keywords.gsub(/[\s]+/, '_').downcase
+    keys = tag.attr['safe'] ? @safe : @normal
     keys.gsub(/\,/, joiner);
   end 
   
@@ -157,11 +157,12 @@ module GalleryItemTags
   
   desc %{
     Usage:
-    <pre><code><r:gallery:item:page_url /></code></pre>
+    <pre><code><r:gallery:item:page_url/></code></pre>
     Provides page url for current gallery item }
   tag "gallery:item:page_url" do |tag|
     item = find_item(tag)
-    File.join(tag.render('url'), item.gallery.url(self.base_gallery_id), "#{item.id}.#{item.extension}/show")
+    url = tag.render('url').gsub(Regexp.compile(item.gallery.url(self.base_gallery_id)),'').gsub(/\/$/,'')
+    File.join(url, item.gallery.url(self.base_gallery_id), "#{item.id}.#{item.extension}/show")
   end
   
   desc %{    
