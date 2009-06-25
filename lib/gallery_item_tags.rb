@@ -153,7 +153,7 @@ module GalleryItemTags
   
   desc %{
     Usage:
-    <pre><code><r:gallery:item:page_url /></code></pre>
+    <pre><code><r:gallery:item:page_url/></code></pre>
     Provides page url for current gallery item }
   tag "gallery:item:page_url" do |tag|
     item = find_item(tag)
