@@ -61,7 +61,10 @@ module GalleryItemTags
         gallery ? gallery.items.find(:all, options) : []
       when 'all'
         GalleryItem.find(:all, options)
-    end    
+    end
+    if tag.attr["exclude"]
+      options[:conditions].merge({"#{GalleryItem.table_name}.parent_id" => "NOT #{tag.attr["exclude"]}"})
+    end
     items.each do |item| 
       tag.locals.item = item
       content << tag.expand
