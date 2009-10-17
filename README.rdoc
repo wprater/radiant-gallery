@@ -21,7 +21,7 @@ After tha Radiant installation you must install the attachment_fu plugin:
   
 Then install the Gallery extension:
   
-  git clone git://github.com/pilu/radiant-gallery.git vendor/extensions/gallery
+  git clone git://github.com/hairballopolis/radiant-gallery.git vendor/extensions/gallery
 
 Now you can run the install task:
 
@@ -34,7 +34,9 @@ Inside that file there are some variables you can edit:
 
 * path_prefix: The galleries folder path.
 * processor: The processor used to create thumbnails (rmagick | image_science | mini_magick).
-* default_thumbnails: a list of thumbnails that will be generated after each upload.
+* default_thumbnails: a list of thumbnails that will be generated after each upload.    
+* max_size: size in kilobytes for the maximum allowed size of image to be processed and added.
+* storage: The type of storage to use (:file_system | :db_file | :s3 | :cloud_files)
   
 == Documentation
 
