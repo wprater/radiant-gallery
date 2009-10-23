@@ -150,12 +150,12 @@ class GalleryItem < ActiveRecord::Base
     end
   end
   
-  def proportional_resize(options = {})
-    max_width = options[:max_width] ? options[:max_width].to_f : width.to_f
-    max_height = options[:max_height] ? options[:max_height].to_f : height.to_f    
-    aspect_ratio, pic_ratio = max_width / max_height.to_f, width.to_f / height.to_f
-    scale_ratio = (pic_ratio > aspect_ratio) ?  max_width / width : max_height / height  
-    [(width * scale_ratio).to_i, (height * scale_ratio).to_i]    
+  def proportional_resize(options = {})     
+    max_width = options[:max_width].to_i > 0 ? options[:max_width] : width
+    max_height = options[:max_height].to_i > 0 ? options[:max_height] : height
+    aspect_ratio, pic_ratio = max_width.to_f / max_height.to_f, width.to_f / height.to_f
+    scale_ratio = (pic_ratio > aspect_ratio) ?  max_width.to_f / width.to_f : max_height.to_f / height.to_f  
+    [(width * scale_ratio).to_i, (height * scale_ratio).to_i]
   end
     
 end
