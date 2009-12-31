@@ -2,8 +2,8 @@ unless defined? RadiantGallery::Version
   module RadiantGallery
     module Version
       Major = '0'
-      Minor = '7'
-      Tiny  = '14'
+      Minor = '8'
+      Tiny  = '1'
     
       class << self
         def to_s
