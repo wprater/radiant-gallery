@@ -9,7 +9,7 @@ class GalleryExtensionError < StandardError; end
 class GalleryExtension < Radiant::Extension
   version RadiantGallery::Version.to_s
   description "Allows to manage list of files/images grouped into galleries"
-  url "http://gravityblast.com/projects/radiant-gallery/"
+  url "http://eightsquarestudio.com/blog/2010/01/01/radiant-gallery/"
   
   define_routes do |map|
     # FIME: it doesn't work with namespace admin and without :name_prefix and path_prefix (only on production). :(
@@ -45,7 +45,7 @@ class GalleryExtension < Radiant::Extension
   end
   
   def deactivate
-    admin.tabs.remove "Galleries"
+    # admin.tabs.remove "Galleries"
   end        
   
   def init

@@ -13,7 +13,7 @@ A Radiant (http://radiantcms.org) extension by Andrea Franz (http://gravityblast
   
 == Installation
 
-After tha Radiant installation you must install the attachment_fu plugin:
+After the Radiant installation you must install the attachment_fu plugin:
   
   cd /path/to/radiant
       
@@ -25,7 +25,7 @@ Then install the Gallery extension:
 
 Now you can run the install task:
 
-  rake RAILS_ENV=production radiant:extensions:gallery:install 
+  rake RAILS_ENV=production radiant:extensions:gallery:install
 
 == Configuration
 
@@ -37,6 +37,13 @@ Inside that file there are some variables you can edit:
 * default_thumbnails: a list of thumbnails that will be generated after each upload.    
 * max_size: size in kilobytes for the maximum allowed size of image to be processed and added.
 * storage: The type of storage to use (:file_system | :db_file | :s3 | :cloud_files)
+	_storage can be updated by also config/environment.rb_
+
+	config/environment.rb
+	  config.after_initialize do
+		...
+	    Radiant::Config["gallery.storage"] = "file_system"
+	  end                                         
   
 == Documentation
 
