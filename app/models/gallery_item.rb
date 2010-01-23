@@ -13,8 +13,8 @@ class GalleryItem < ActiveRecord::Base
   end
   
   attr_accessible :name, :description, :uploaded_data, :keywords
-  
-  has_attachment :storage => Radiant::Config["gallery.storage"].to_sym,
+    
+  has_attachment :storage => Radiant::Config["gallery.storage"] ? Radiant::Config["gallery.storage"].to_sym : :file_system,
     :path_prefix => Radiant::Config["gallery.path_prefix"],
     :processor => Radiant::Config["gallery.processor"],
     :max_size => Radiant::Config["gallery.max_size"].to_i.kilobytes     

@@ -36,14 +36,16 @@ Inside that file there are some variables you can edit:
 * processor: The processor used to create thumbnails (rmagick | image_science | mini_magick).
 * default_thumbnails: a list of thumbnails that will be generated after each upload.    
 * max_size: size in kilobytes for the maximum allowed size of image to be processed and added.
-* storage: The type of storage to use (:file_system | :db_file | :s3 | :cloud_files)
-	_storage can be updated by also config/environment.rb_
+* storage: The type of storage to use (:file_system | :db_file | :s3 | :cloud_files) ], the default is :file_system 
+
+storage can be updated by also config/environment.rb
 
 	config/environment.rb
 	  config.after_initialize do
 		...
 	    Radiant::Config["gallery.storage"] = "file_system"
 	  end                                         
+
   
 == Documentation
 
