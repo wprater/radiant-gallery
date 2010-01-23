@@ -1,8 +1,9 @@
-if (!Gallery) var Gallery = {};
+var Gallery = Gallery || {};
 
 Gallery.EditForm = {
 
-    init: function(popup, link) {
+    init: function(popup, link) {    
+		
         if (!this.submitHandler) this.initializeHandler();
         var item = link.up('.item');
         popup.down('form').setAttribute('action', link.getAttribute('href'));
@@ -23,8 +24,10 @@ Gallery.EditForm = {
         this.show(popup);
     },
 
-    show: function(popup) {
-        center(popup.show());
+    show: function(popup) {  
+	
+		popup.show();            		
+		popup.centerInViewport();
         popup.setStyle({
             top: '100px'
         });
