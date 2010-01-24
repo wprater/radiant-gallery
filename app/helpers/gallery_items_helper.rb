@@ -14,7 +14,6 @@ module GalleryItemsHelper
     content = '<div class="buttons">'
     content << item_show_button(item)
     content << item_edit_button(item)
-    content << item_edit_image_button(item)
     content << item_destroy_button(item)
     content << '</div>'
   end
@@ -28,18 +27,9 @@ module GalleryItemsHelper
     end
   end
   
-  
-  def item_edit_image_button(item)
-    content = ''
-    #if item.image?
-    #  content << link_to(image('gallery/edit-image.png'),  gallery_item_edit_image_url(:id => item), :title => 'Edit image' )
-    #end
-    content
-  end
-  
   def item_destroy_button(item)
     link_to image_tag('extensions/gallery/admin/destroy.png'), admin_gallery_item_url(@gallery, item),
-      :class => 'action destroy', :title => 'Destroy', :method => 'delete'
+      :class => 'action destroy', :title => 'Destroy'
   end
   
   def item_edit_button(item)

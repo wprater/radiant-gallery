@@ -1,4 +1,4 @@
-if (!Gallery) var Gallery = {};
+var Gallery = Gallery || {};
 
 Gallery.Panel = Class.create({
   initialize: function(element, itemListSelector) {        
@@ -40,7 +40,7 @@ Gallery.Panel = Class.create({
     });
   },
   
-  handleClick: function(event) {    
+  handleClick: function(event) {  
     var link = event.findElement('a.action');
     if (link) {
       event.stop();
@@ -56,7 +56,8 @@ Gallery.Panel = Class.create({
     }
   },
   
-  destroyItem: function(link) {
+  destroyItem: function(link) { 
+
     var item = link.up('.item');
     if (confirm('Do you want to delete selected file?')) {
       new Ajax.Request(link.getAttribute('href'), {
@@ -83,7 +84,10 @@ Gallery.Panel = Class.create({
   },
   
   makeListSortable: function() {    
-    if (this.sortable) Sortable.destroy(this.container);
+    if (this.sortable) {
+		Sortable.destroy(this.container);
+	}
+	
     this.sortable = new LiteSortable(this.container, {
 			overlap: 'horizontal', constraint: 'horizontal', handle: 'image', 
 			tag: 'div', only: 'item', onUpdate: this.sort.bind(this)
@@ -91,7 +95,7 @@ Gallery.Panel = Class.create({
   },
   
   sort: function(list, element, id, old_position, new_position) {
-		new Effect.Highlight(element, {duration:  0.5})
+		new Effect.Highlight(element, {duration:  0.5});
 		new Ajax.Request('/admin/galleries/' + this.gallery_id + '/items/' + id + '/move' , {
 		  method: 'put',
 			parameters: {
