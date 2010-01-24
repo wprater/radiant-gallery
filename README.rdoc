@@ -22,6 +22,8 @@ After the Radiant installation you must install the attachment_fu plugin:
 Then install the Gallery extension:
   
   git clone git://github.com/hairballopolis/radiant-gallery.git vendor/extensions/gallery
+  cd vendor/extensions/gallery
+  git checkout 0.8.1 or the latest stable version in line with the current radiant version
 
 Now you can run the install task:
 

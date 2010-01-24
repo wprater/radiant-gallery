@@ -7,9 +7,9 @@ Gallery.EditForm = {
         if (!this.submitHandler) this.initializeHandler();
         var item = link.up('.item');
         popup.down('form').setAttribute('action', link.getAttribute('href'));
+
         var name = item.down('.label a').innerHTML;
-        if (name == '&nbsp;') name = '';
-        $('edit-item-name').value = name;
+        $('edit-item-name').value = (name === '&nbsp;') ? '' : name;
         $('edit-item-description').value = item.down('.description').innerHTML;
         $('edit-item-keywords').value = item.down('.keywords').innerHTML;
     },
@@ -26,11 +26,11 @@ Gallery.EditForm = {
 
     show: function(popup) {  
 	
-		popup.show();            		
-		popup.centerInViewport();
-        popup.setStyle({
-            top: '100px'
-        });
+			popup.show();            		
+			popup.centerInViewport();
+       popup.setStyle({
+           top: '100px'
+       });  
     },
 
     close: function() {
@@ -50,18 +50,14 @@ Gallery.EditForm = {
 
     handleFormSubmit: function(event) {
         event.stop();
-        var url = event.target.getAttribute('action');
-        var name = $('edit-item-name').value;
-        var description = $('edit-item-description').value;
-        var keywords = $('edit-item-keywords').value;
         $('edit-spinner').show();
         $('edit-submit').hide();
-        new Ajax.Request(url, {
+        new Ajax.Request( event.target.getAttribute('action'), {
             method: 'put',
             parameters: {
-                'gallery_item[name]': name,
-                'gallery_item[description]': description,
-                'gallery_item[keywords]': keywords,
+                'gallery_item[name]': $('edit-item-name').value,
+                'gallery_item[description]': $('edit-item-description').value,
+                'gallery_item[keywords]': $('edit-item-keywords').value,
                 authenticity_token: $('authenticity_token').value
             }
         });
