@@ -120,6 +120,25 @@ module GalleryItemTags
   
   desc %{
     Usage:
+    <pre><code><r:gallery:item:url /></code></pre>
+    Provides the URL for current gallery item }
+  tag "gallery:item:url" do |tag|      
+    item = find_item(tag)
+    item.url
+  end  
+  
+  desc %{
+    Usage:
+    <pre><code><r:gallery:item:if_url ><a href="<r:gallery:item:url />">Link</a></r:gallery:item:if_url></code></pre>
+    Processes tag  }
+  tag "gallery:item:if_url" do |tag|      
+    item = find_item(tag)
+    
+    tag.expand unless item.url.nil? || item.url.empty?
+  end  
+  
+  desc %{
+    Usage:
     <pre><code><r:gallery:item:description /></code></pre>
     Provides description for current gallery item }
   tag "gallery:item:description" do |tag|  

@@ -36,17 +36,13 @@ class GalleryExtension < Radiant::Extension
   
   def activate
     init
-    tab_options = {:visibility => [:all]}  
-    if Radiant::Config.table_exists? 
-      Radiant::Config["gallery.gallery_based"] == 'true' ? tab_options[:before] = "Pages" : tab_options[:after] = "Layouts"
-    end
-    admin.tabs.add("Galleries", "/admin/galleries", tab_options)
+       
+    tab "Content" do
+        add_item("Galleries", "/admin/galleries", {:visibility => [:all]}) 
+    end     
+
     admin.page.edit.add :layout_row, 'base_gallery' if admin.respond_to?(:page)
-  end
-  
-  def deactivate
-    # admin.tabs.remove "Galleries"
-  end        
+  end      
   
   def init
     Page.send(:include, PageExtensionsForGallery, GalleryTags, GalleryItemTags, GalleryItemInfoTags, GalleryLightboxTags)

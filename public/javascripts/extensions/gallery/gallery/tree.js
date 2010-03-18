@@ -1,4 +1,4 @@
-if (!Gallery) var Gallery = {};
+var Gallery = Gallery || {};
 
 Gallery.TreeItem = Class.create({ 	
 	

@@ -3,8 +3,10 @@ var Gallery = Gallery || {};
 Gallery.Panel = Class.create({
   initialize: function(element, itemListSelector) {        
     this.element = $(element);
-    this.setup(itemListSelector);
-    this.setupHandlers();
+    this.setup(itemListSelector); 
+
+    this.element.observe('click', this.handleClick.bind(this)); 
+    
     this.loadItems();
   },    
   
@@ -16,11 +18,6 @@ Gallery.Panel = Class.create({
   
   setupHandlers: function() {
     this.element.observe('click', this.handleClick.bind(this));
-  },
-  
-  reloadItems: function() {
-    // FIXME
-    this.loadItems();
   },
   
   loadItems: function() {
@@ -40,37 +37,25 @@ Gallery.Panel = Class.create({
     });
   },
   
-  handleClick: function(event) {  
+  handleClick: function(event) {
     var link = event.findElement('a.action');
     if (link) {
-      event.stop();
-      this.hadleItemAction(link);      
+       event.stop();
+       if (link.hasClassName('destroy')) {  
+	
+         var item = link.up('.item');
+         if (confirm('Do you want to delete selected file?')) {
+           new Ajax.Request(link.getAttribute('href'), {
+             method: 'delete',
+             parameters: { authenticity_token: this.authenticity_token },
+             onLoading: function(request) { item.remove(); }
+           });
+         }   
+       } else if (link.hasClassName('edit')) {
+           Gallery.EditForm.open(link);
+       }                               
     }
-  },
-  
-  hadleItemAction: function(link) {
-    if (link.hasClassName('destroy')) {
-      this.destroyItem(link);
-    } else if (link.hasClassName('edit')) {
-      this.editItem(link);
-    }
-  },
-  
-  destroyItem: function(link) { 
-
-    var item = link.up('.item');
-    if (confirm('Do you want to delete selected file?')) {
-      new Ajax.Request(link.getAttribute('href'), {
-        method: 'delete',
-        parameters: { authenticity_token: this.authenticity_token },
-        onLoading: function(request) { item.remove(); }
-      });
-    }
-  },
-  
-  editItem: function(link) {    
-    Gallery.EditForm.open(link);
-  },
+  }, 
   
   handleLoading: function() {
     this.working = true;

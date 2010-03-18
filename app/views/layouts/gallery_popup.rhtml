@@ -3,16 +3,19 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<title>New file</title>
-	<%= javascript_include_tag 'prototype' %>
-	<%= javascript_include_tag 'effects' %>
+	<%= javascript_include_tag 'admin/prototype' %>
+	<%= javascript_include_tag 'admin/effects' %>
 	
 	<style type="text/css" media="screen">
     body { font-family: "Lucida Grande","Bitstream Vera Sans",Helvetica,Verdana,Arial,sans-serif; margin: 0; }
     #header, #footer, #content { padding: 20px 10px;}
-    #header { background: #CC0000; color: #FFF;}
-    #header h1 { margin: 0; }    
+    #header {
+      position: relative;
+      background: #CC0000 url(/images/admin/navigation_background.gif) repeat-x scroll 0 0; 
+      color: #FFF;
+      padding: 0;
+    }
     #navigation {
-      border-bottom:2px solid #CC0000;
       font-size:90%;
       line-height:100%;
       margin-bottom:-20px;
@@ -47,7 +50,6 @@
 <body id="<%= @gallery.id %>">
   <div id="container">
     <div id="header">
-      <h1>New file</h1>
       <div id="navigation">
         <%= gallery_popup_tab_link_to 'GalleryItems', 'New File', new_admin_gallery_item_path(@gallery) %>
         <span class="separator"> | </span>
